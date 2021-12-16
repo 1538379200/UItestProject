@@ -20,6 +20,7 @@ class Base:
     '''运行自动开启浏览器driver'''
     def __init__(self,dr):
         self.dr = dr
+        self.dr.implicitly_wait(10)
 
     '''定义打开网址方法'''
     # @logger(success='成功打开网址',fail='打开网址失败')

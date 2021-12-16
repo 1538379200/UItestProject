@@ -178,3 +178,7 @@ def return_casefiles(request):
     for file in case_files:
         casefiles_list.append(file.title)
     return JsonResponse({'casefiles':casefiles_list})
+
+#等待loading界面
+def loading(request):
+    return render(request,'TestApp/LoadingPage.html')

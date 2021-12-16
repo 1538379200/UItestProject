@@ -3,9 +3,10 @@ import openpyxl
 from pathlib import Path
 from luckylog.luckylog import Logger
 # from django.contrib.auth.models import User
-from django.shortcuts import redirect,render,HttpResponse
+from django.shortcuts import redirect,render,HttpResponse,reverse
 from selenium import webdriver
 from TestApp import models
+from django.views.decorators.csrf import csrf_exempt
 from selenium.webdriver.chrome.options import Options
 import json
 # casefile_Path = Path(__file__).resolve().parents[3]/'media'/'11.xlsx'
@@ -14,10 +15,13 @@ import json
 # sheets = work_book.sheetnames
 # # print(sheets)
 
-
-def runTest(request,file):
+@csrf_exempt
+def runTest(request):
     current_user = request.user.id
+    request_body = json.loads(request.body)
+    file = request_body.get('file')
     file_list = models.case_file.objects.filter(title=file,f_num_id=current_user)
+    print(file_list)
     option = Options()
     option.headless = True
     if file_list:
