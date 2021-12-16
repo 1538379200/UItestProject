@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+<html lang="en">
+<head>
+
+</head>
+<body>
+    {% block content %}
+        {{ block.super }}
+        {% if message %}
+        <div>{{ message }}</div>
+        {% endif %}
+    {% endblock %}
+</body>
+<script>
+
+</script>
+</html>

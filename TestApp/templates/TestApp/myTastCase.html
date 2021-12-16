@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+        <title>我的用例</title>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+        {{ block.super }}
+        <div>
+            <table class="layui-hide" id="testcase" lay-filter="casefile">
+                <script type="text/html" id="tableControl">
+                    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+                </script>
+            </table>
+        </div>
+    {% endblock %}
+</body>
+<script>
+    {% block js %}
+        {{ block.super }}
+        layui.use(['table','layer'],function () {
+            var table = layui.table;
+            var  layer = layui.layer;
+            var $ = layui.$;
+            table.render({
+                elem: '#testcase',
+                url: "{% url 'gettestcase' %}",
+                page:true,
+                limit: 10,
+                limits: [5,10,20],
+                height: 500,
+                cols: [[
+                    {field:'id',title:'文件ID',sort:true,fixed:'left',align: "center",width:100},
+                    {field:'filename',title:'文件名',width: 800},
+                    {field:'update',title:'上传时间',width: 430},
+                    {field: 'right',title: '操作',width: 200,align:'center',toolbar:'#tableControl'},
+                ]],
+                done: function (res) {
+                    console.log(res);
+                },
+                error: function (res) {
+                    console.log(res.code);
+                },
+            });
+            table.on('tool(casefile)',function (obj) {
+                var data = obj.data;
+                var LayEvent = obj.event;
+                var tr = obj.tr;
+                if (LayEvent === 'del'){
+                    layer.confirm('确定删除？',function (index) {
+                        obj.del();
+                        layer.close(index);
+                        console.log('文件名',data.filename)
+                        $.ajax({
+                            url: "{% url 'deletafile' %}",
+                            data:{
+                                filename: data.filename,
+                            },
+                            method: 'post',
+                            done: function (res) {
+                                {#console.log(data.filename);#}
+                                layer.alert(res.info_del);
+                            },
+                        });
+
+                    })
+                }
+            })
+        });
+    {% endblock %}
+</script>
+</html>

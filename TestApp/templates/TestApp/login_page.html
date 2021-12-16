@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <script type="application/javascript" src={% static 'layui.js' %}></script>
+    <link rel="stylesheet" href={% static 'css/layui.css' %}>
+{#    <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.3/index.js"></script>#}
+{#    <script type="application/javascript" src={% static 'vue.js' %}></script>#}
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        form{
+            box-shadow: 0 0 20px 1px #282429;
+        }
+        input{
+            border: 1px solid black;border-radius: 5px
+        }
+        .layui-form-item{
+            padding-left: 50px;padding-right: 50px
+        }
+        .layui-row{
+            background-color: #d2ffd2;border-radius: 15px
+        }
+        .layui-layer-title{
+            background-color: #393D49;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-container layui-anim layui-anim-up" style="margin: 0 auto;padding-top: 100px;">
+        <form class="layui-form layui-col-md6 layui-col-md-offset3" method="post" style="border: 2px solid black;border-radius: 15px;line-height: 50px">
+            {% csrf_token %}
+            <div class="layui-row" style="background-color: #c2c2c2;border-radius: 15px">
+                <div class="layui-form-item" style="text-align: center;">
+                    <h1 style="font-weight: bold">登录</h1>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary" style="float: right"><a href={% url 'sightinpage' %}>前往注册</a></button>
+                </div>
+            </div>
+            <hr>
+            <div class="layui-form-item" style="padding-left: 50px;padding-right: 50px">
+
+                <label class="layui-icon layui-icon-username">用户名</label>
+                <input class="layui-input" name="lg_user" required lay-verify="required" id="lg_user" style="border: 1px solid black;border-radius: 5px">
+            </div>
+            <div class="layui-form-item" style="padding-left: 50px;padding-right: 50px">
+                <label class="layui-icon layui-icon-password">密码</label>
+                <input class="layui-input" type="password" required lay-verify="required" name="lg_pwd" required id="lg_pwd" style="border: 1px solid black;border-radius: 5px">
+            </div>
+            <div class="layui-form-item" style="padding-left: 50px;padding-right: 50px">
+                <button lay-submit lay-filter="LAY-button-submit"  type="submit" id="send_logininfo" class="layui-btn layui-btn-fluid layui-anim" data-anim="layui-anim-upbit" style="background-color: #393D49">登录</button>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    layui.use(['element','form'],function () {
+        var element = layui.element, form = layui.form, $=layui.$,layero = layui.layero;
+        form.on('submit(LAY-button-submit)',function (data) {
+            $.ajax({
+                url: "{% url 'logincheck' %}",
+                type: 'post',
+                data: {
+                  'user': $('#lg_user').val(),
+                  'pwd': $('#lg_pwd').val(),
+                },
+                datatype: 'json',
+                success: function (res) {
+                    if (res.st === 0){
+                        self.location="{% url 'UiTestName' %}"
+                    }else {
+                        layer.open({
+                            title: '登录失败',
+                            content: res.ms,
+                            shadeClose: true,
+                        });
+                    }
+                },
+            });
+            return false;
+        });
+    });
+</script>
+<script>
+    layui.use(['element','form'],function () {
+    var element = layui.element;
+    var form = layui.form;
+    var $ = layui.$;
+    $('button').on('click',function () {
+        $('button').addClass('layui-anim-upbit');
+        setTimeout(function () {
+            $('button').removeClass('layui-anim-upbit');
+        },500)
+    });
+});
+</script>
+</html>

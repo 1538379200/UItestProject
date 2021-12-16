@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+<html lang="en">
+{% load static %}
+<head>
+{% block header%}
+    {{ block.super }}
+    <style>
+    html{
+        height: 100%;
+    }
+    body {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    #app {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    #wa{
+        flex: 1 0 auto;
+        overflow-y: auto;
+    }
+    #foot{
+        padding-bottom: 5px;
+        flex: 0 0 auto;
+    }
+    #btnCase{
+        width: 300px;
+        height: 300px;
+        text-align: center;
+        padding-top: 6%;
+        border-radius: 500px;
+        box-shadow: 0 0 20px 1px #282429;
+    }
+    </style>
+{% endblock %}
+</head>
+<body>
+
+{% block content %}
+    {{ block.super }}
+    <div id="app">
+    {% csrf_token %}
+{#        <button @click="check">点击开始检查</button>#}
+        <div id="wa">
+            <div class="layui-col-md6">
+                <h1 class="layui-bg-green" style="text-align: center;border: 1px solid green;border-radius: 5px">通过</h1>
+                <table class="layui-table">
+                    <tr style="font-weight: bold">
+                        <td>用例ID</td>
+                        <td>用例操作</td>
+                        <td>用例参数</td>
+                        <td>用例描述</td>
+                        <td>操作</td>
+                    </tr>
+                    {% verbatim %}
+                    <tr v-for="item in Scaseinfo" :key="item[0]">
+                        <td>{{ item[0] }}</td>
+                        <td ref="typevalue">{{ item[1] }}</td>
+                        <td>{{ item[2] }}</td>
+                        <td>{{ item[3] }}</td>
+                        <td><button class="layui-btn layui-btn-danger layui-btn-xs" @click="opera(item)">编辑</button></td>
+                    </tr>
+                    {% endverbatim %}
+                </table>
+            </div>
+            <div class="layui-col-md6">
+                <h1 class="layui-bg-red" style="text-align: center;border: 1px solid #FF5722;border-radius: 5px">未通过</h1>
+                <table class="layui-table">
+                    <tr style="font-weight: bold">
+                        <td>用例ID</td>
+                        <td>用例操作</td>
+                        <td>用例参数</td>
+                        <td>用例描述</td>
+                        <td>操作</td>
+                    </tr>
+                    {% verbatim %}
+                    <tr v-for="item in Ecaseinfo" :key="item[0]" style="color: red">
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                        <td>{{ item[2] }}</td>
+                        <td>{{ item[3] }}</td>
+                        <td><button class="layui-btn layui-btn-xs layui-btn-danger" @click="opera(item,$event)">编辑</button></td>
+                    </tr>
+                    {% endverbatim %}
+                </table>
+            </div>
+            {% verbatim %}
+            <el-dialog title="修改操作类型" :visible="setvisible" :show-close="setshow">
+                <span><el-input type="text" placeholder="输入修改的操作类型" v-model="setType">
+                    <template slot="prepend">用例-{{ caseId }}</template>
+                </el-input></span>
+                <span slot="footer">
+                    <el-button @click="setvisible=false">取消</el-button>
+                    <el-button @click="valueitem" type="primary">确定</el-button>
+                </span>
+            </el-dialog>
+            {% endverbatim %}
+            <form class="layui-form layui-row layui-anim layui-anim-up" :style="formStyle">
+                {% csrf_token %}
+                <div class="layui-form-item layui-col-md5 layui-col-md-offset5 layui-bg-blue" id="btnCase">
+                    <el-select v-model="value" placeholder="请选择用例文件">
+                        {% verbatim %}
+                        <el-option v-for="(casefile,index) in casefilesList" :value="casefile" :key="index"></el-option>
+                        {% endverbatim %}
+                    </el-select>
+                    <el-button type="success" @click="checkCasefile">进入用例检测</el-button>
+                </div>
+            </form>
+        </div>
+        <div id="foot">
+            <div class="layui-col-md12">
+                <button class="layui-col-md12 layui-btn layui-btn-fluid" :style="btnSet" @click="GoTest">提交测试</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+<script>
+    import {axios} from "../../../static/axios";
+    {% block js %}
+        {{ block.super }}
+        const vm = new Vue({
+            el: '#app',
+            data:{
+                casefilesList:[],
+                value: null,
+                setshow:false,
+                Scaseinfo:[],
+                Ecaseinfo:[],
+                num: 0,
+                setvisible:false,
+                setType:null,
+                caseId:null,
+                reCaselist:[],
+                formStyle:'padding-top: 10%;line-height: 50px;display: block',
+                btnSet:'border-radius: 5px;display: none',
+
+            },
+            created(){
+                let that = this;
+                axios.get("{% url 'casefilereturn' %}").then(res=>{
+                    that.casefilesList = res.data.casefiles;
+                    console.log(res.data.casefiles);
+                }).catch(e=>{
+                    console.log(e)
+                });
+            },
+
+            methods:{
+                opera(item,event){
+                    {#console.log(this.$refs)#}
+                    this.caseId = item[0];
+                    this.setvisible = true;
+                },
+                valueitem(){
+                    {#console.log(this.reCaselist);#}
+                    axios.post("{% url 'caseset' %}",JSON.stringify({setcaseid:this.caseId,typevalue:this.setType,casefile:this.value})).then(res=>{
+                        if (res.data.st === 0){
+                            alert(res.data.mg);
+                        }else {
+                              axios.post("{% url 'casecheck' %}",{'casefile':this.value}).then(res=>{
+                                  if (res.data.st === 0){
+                                      this.Scaseinfo = res.data.pass_;
+                                      this.Ecaseinfo = res.data.fail_;
+                                  }else {
+                                      alert(res.data.mes);
+                                  }
+                              });
+                        }
+                    }).catch(e=>{
+                        console.log(e);
+                    });
+                    this.setvisible = false;
+                },
+                checkCasefile(){
+                    axios.post("{% url 'casecheck' %}",{'casefile':this.value}).then(res=>{
+                          if (res.data.st === 0){
+                              this.Scaseinfo = res.data.pass_;
+                              this.Ecaseinfo = res.data.fail_;
+                          }else {
+                              alert(res.data.mes);
+                          }
+                        if (this.Scaseinfo===[]&&this.Ecaseinfo===[]){
+                            this.formStyle = 'padding-top: 10%;line-height: 50px;display: block';
+                            this.btnSet = 'border-radius: 5px;display: none'
+
+                        }else {
+                            this.formStyle = 'padding-top: 10%;line-height: 50px;display: none';
+                            this.btnSet = 'border-radius: 5px;'
+                        }
+                    });
+                },
+                GoTest(){
+                    var file = this.value;
+                    window.location.href = "/runtest/"+file
+                },
+            },
+        });
+    {% endblock %}
+</script>
+</html>

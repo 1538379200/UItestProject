@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <script type="application/javascript" src={% static 'layui.js' %}></script>
+    <link  rel="stylesheet" href={% static 'css/layui.css' %}>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <style>
+        {% include 'TestApp/model/LSmodel.html' %}
+    </style>
+</head>
+<body>
+    <div class="layui-container layui-anim layui-anim-up" style="margin: 0 auto;padding-top: 100px;">
+        <form class="layui-form layui-col-md6 layui-col-md-offset3" method="post" action={% url 'sight' %}>
+            {% csrf_token %}
+            <div class="layui-row">
+                <div class="layui-form-item">
+                    <h1 style="font-weight: bold;text-align: center">注册用户</h1>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary" style="float: right"><a href={% url 'loginpage' %}>前往登录</a></button>
+                </div>
+            </div>
+            <hr>
+            <div class="layui-form-item">
+                <label>用户名</label>
+                <input type="text" name="username" class="layui-input" required lay-verify="required" style="border: 1px solid black;border-radius: 5px">
+            </div>
+            <div class="layui-form-item">
+                <label>密码</label>
+                <input type="password" name="pwd" class="layui-input" required lay-verify="required" style="border: 1px solid black;border-radius: 5px">
+            </div>
+            <div class="layui-form-item">
+                <label>邮箱</label>
+                <input type="email" name="email" class="layui-input" required lay-verify="required" style="border: 1px solid black;border-radius: 5px">
+            </div>
+            <div class="layui-form-item">
+                <button type="submit" class="layui-btn layui-btn-fluid layui-anim" data-anim="layui-anim-upbit" style="background-color: #393D49">提交</button>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    layui.use(['element','form'],function () {
+        var element = layui.element;
+        var form = layui.form;
+        var $ = layui.$;
+        $('button').on('click',function () {
+            $('button').addClass('layui-anim-upbit');
+            setTimeout(function () {
+                $('button').removeClass('layui-anim-upbit');
+            },500)
+        });
+    });
+</script>
+<script>
+    layui.use('layer',function () {
+        var layer = layui.layer;
+        var send_msg = {{ 'mes'|safe }};
+        layer.alert(send_msg);
+    });
+</script>
+</html>

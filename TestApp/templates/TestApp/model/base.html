@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    {% block header %}
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>自动化测试平台</title>
+    {% endblock %}
+    <script type="text/javascript" src={% static 'layui.js' %}></script>
+    <link rel="stylesheet" href={% static 'css/layui.css' %}>
+    <script type="text/javascript" src={% static 'vue.js' %}></script>
+    <script type="text/javascript" src={% static 'element-ui.js' %}></script>
+    <script type="text/javascript" src={% static 'axios.js' %}></script>
+    <link rel="stylesheet" href={% static 'css/element-ui.css' %}>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <div class="layui-row" style="background-color: #393D49;text-align: center">
+        <ul class="layui-nav" style="background-color: #393D49">
+            <li class="layui-nav-item layui-col-md2" style="font-weight: bold;margin-left: 50px;"><a style="font-size: larger" href={% url 'index' %}>自动化测试平台</a></li>
+            <li class="layui-nav-item layui-col-md1"><a href={% url 'UiTestName' %}>功能测试</a></li>
+            <li class="layui-nav-item layui-col-md1"><a href="">接口测试</a></li>
+            <li id="model-down" class="layui-nav-item layui-col-md2 layui-col-md-offset3"><a class="layui-icon layui-icon-download-circle" href={% url 'downloadmodel' %}>下载UI测试模板</a></li>
+            <li class="layui-nav-item layui-col-md1">
+                {% if request.session.username %}
+                <a href="" style="font-weight: bold"><span class="layui-icon layui-icon-username"></span>{{ request.session.username }}</a>
+                {% endif %}
+                <dl class="layui-nav-child">
+{#                    <dd><a href="">个人信息</a></dd>#}
+                    <dd><a href={% url 'testcasepage' %}>我的用例</a></dd>
+                    <dd><a href={% url 'loginout' %}>注销登录</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    {% endblock %}
+</body>
+<script>
+    {% block js %}
+    layui.use('element',function () {
+        var element = layui.element;
+    });
+    {% endblock %}
+</script>
+</html>

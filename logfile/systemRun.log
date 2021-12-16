@@ -1,0 +1,10 @@
+(p≧w≦q) === 2021-12-07 15:38:34 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-07 15:38:57 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(upload_testcase) <SUCCESS> LINE-100 *MSG==√('用户', 'hzz1', '成功上传用例文件：', 'testzz.xlsx') ===
+(p≧w≦q) === 2021-12-07 15:39:18 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(deleta_data) <SUCCESS> LINE-120 *MSG==√('用户', 'hzz1', '删除文件：', 'testzz.xlsx') ===
+(p≧w≦q) === 2021-12-07 16:39:36 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(upload_testcase) <SUCCESS> LINE-100 *MSG==√('用户', 'hzz1', '成功上传用例文件：', 'testzz.xlsx') ===
+(p≧w≦q) === 2021-12-08 21:11:31 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-10 13:43:06 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-12 13:15:46 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-13 13:13:28 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-14 12:52:20 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===
+(p≧w≦q) === 2021-12-15 13:09:30 FILE_PATH=(D:\pythonProject\UItestProject\TestApp\views.py) FUNC-(loginUser) <SUCCESS> LINE-61 *MSG==√('***用户', 'hzz1', '登录***') ===

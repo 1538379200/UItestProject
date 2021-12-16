@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    {% block header %}
+        <title>ui测试页面</title>
+        <script type="text/javascript" src={% static 'layui.js' %}></script>
+        <script type="text/css" src={% static 'vue.js' %}></script>
+        <link rel="stylesheet" href={% static 'css/uploadstyle.css' %}>
+        <link rel="stylesheet" href={% static 'css/layui.css' %}>
+        <style>
+            {#.layui-anim {animation-duration: 1s}#}
+            body{
+                background-color: #eeeeee;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    {{ block.super }}
+    <div class="layui-col-md6 layui-col-md-offset4 layui-anim layui-anim-up">
+        <div class="container" style="padding-top: 150px;" id="upload">
+          <div class="main-box">
+            <div class="box-content">
+              <div class="svg">
+                <svg width="66" height="57" viewBox="0 0 66 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.70977 0H19.4194C20.2733 0 21.0742 0.402215 21.5857 1.08315L25.3821 6.14266C25.8937 6.82361 26.6946 7.22581 27.5484 7.22581H62.3226C63.8185 7.22581 65.0323 8.43956 65.0323 9.93548V53.2903C65.0323 54.7862 63.8185 56 62.3226 56H2.70968C1.21376 56 0 54.7862 0 53.2903V2.70968C0 1.21375 1.21385 0 2.70977 0Z"
+                                    transform="translate(0.0177612 0.740387)" fill="#4F8AFE" />
+                            </svg>
+              </div>
+              <div class="text">
+                <p class="title">TestCase Upload </p>
+                <span>点击或拖拽上传</span>
+              </div>
+              <div class="dots">
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+{#    </div>#}
+{#<a href="https://dribbble.com/YancyMin" class="dr-url" target="_blank"><img class="dr" src="https://cdn.dribbble.com/assets/logo-footer-hd-a05db77841b4b27c0bf23ec1378e97c988190dfe7d26e32e1faea7269f9e001b.png" alt=""></a>#}
+        <br><br>
+        <div id="pre" class="layui-card" style="display: none;width: 480px;height: 100px;border-radius: 10px">
+            <div class="layui-card-header" style="background-color: #4F8AFE;border-radius: 10px;text-align: center;font-weight: bold">文件预览</div>
+            <div class="layui-card-body layui-row">
+                <div id="pre-body" class="layui-col-md9"></div>
+                <div class="layui-col-md3">
+                    <button id="go" class="layui-btn layui-btn-xs">提交</button>
+                    <button id="del" class="layui-btn layui-btn-xs layui-btn-danger">删除</button>
+                </div>
+            </div>
+        </div>
+        <a class="layui-col-md-offset6" style="font-weight: bold;" href={% url 'casecheckpage' %}>前往测试<label class="layui-icon layui-icon-right"></label></a>
+    </div>
+{% endblock %}
+</body>
+<script>
+    {% block js %}
+        {{ block.super }}
+        layui.use(['form','layer','upload','element'],function () {
+            var fileArry = new Array(10);
+            var form=layui.form;
+            var element = layui.element;
+            var upload = layui.upload;
+            var $=layui.$;
+            setTimeout(function () {
+                $("#upload").removeClass("layui-anim layui-anim-up");
+                $("#pre").addClass("layui-anim layui-anim-up");
+            },300)
+            var uploadInst = upload.render({
+                elem: '#upload',      {# 需要重新协商上传按钮的ID #}
+                url: "{% url 'upload_files' %}",   {# 上传接口需要修改 #}
+                auto: false,
+                bindAction: '#go',         {# 点击上传的按钮需要修改 #}
+                accept: 'file',               {# 需要设定上传的类型，文件写file #}
+                exts: 'xls|xlsx',                  {# 需要修改文件类型 #}
+                acceptMime: 'file/xls,file/xlsx',        {# 查找的文件后缀也需要修改 #}
+                drag: true,
+                choose: function (obj) {
+                    fileArry = obj.pushFile();    {# 将选择的文件推入一个设定的变量中 #}
+                    {#$("#del").show();      {# 显示文件和删除文件的按钮设置隐藏和显示，需要修改 #}
+                    $("#pre").show();
+                    {#$("#go").removeClass('layui-btn-disabled');   {# 防止误操作，设置按钮为禁用，此处移除，只在有文件时启动按钮#}
+                    document.getElementById('go').disabled=false;       {# 给按钮再加一个disabled属性，防止layui未能及时制止操作 #}
+                    obj.preview(function (index,file) {
+                        $("#pre-body").html(fileArry[index].name);
+                        $("#del").on('click',function () {
+                            if (fileArry[index]){
+                                console.log(fileArry[index].name);
+                                delete fileArry[index];
+                                uploadInst.config.elem.next()[0].value = '';  {# 清空选择文件的值，以免删除后不能再选择同样文件 #}
+                                if (fileArry[index]){
+                                    layer.alert('文件未删除!');
+                                }else {
+                                    layer.alert('文件已删除');
+                                    $("#pre-body").html('');
+                                    $('#pre').hide();
+                                    {#$("#del").hide();#}
+                                    {#$("#go").addClass('layui-btn-disabled');#}
+                                    {#document.getElementById('go').disabled=true;#}
+                                }
+                            }
+                        });
+                    });
+                },
+                before: function (index,file) {
+                    layer.load();
+                },
+                done: function (res,index,upload) {
+                    layer.closeAll('loading');
+                    {#layer.alert(res.info1);#}
+                    if (res.st === 1){
+                        if (fileArry[index]){
+                        console.log(fileArry[index].name);
+                        delete fileArry[index];
+                        $('#pre').html('');
+                        $('#pre').hide();
+                        {#$("#pre").hide();#}
+                        {#$("#del").hide();#}
+                        {#$("#go").addClass('layui-btn-disabled');#}
+                        {#document.getElementById('go').disabled=true;#}
+                        $('#upload').attr('style','animation-direction: reverse');
+                        $('#upload').addClass('layui-anim layui-anim-down');
+                        setTimeout(function () {
+                            self.location="{% url 'uitest' %}";
+                        },200);
+                        }else {
+                            layer.alert('没有文件需要删除');
+                        }
+                    }else {
+                        layer.alert(res.info1);
+                    }
+                },
+            });
+        });
+    {% endblock %}
+</script>
+</html>

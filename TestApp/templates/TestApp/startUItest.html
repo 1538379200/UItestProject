@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>ui-测试界面</title>
+    {% endblock title %}
+    {% block header %}
+        {{ block.super }}
+        <style>
+        #btnCase{
+            width: 300px;
+            height: 300px;
+            text-align: center;
+            padding-top: 6%;
+            border-radius: 500px;
+            box-shadow: 0 0 20px 1px #282429;
+        }
+        </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+        {{ block.super }}
+        <div id="app" class="layui-anim layui-anim-up" style="padding-top: 10%;line-height: 50px">
+            <form class="layui-form layui-row">
+                <div class="layui-form-item layui-col-md5 layui-col-md-offset5 layui-bg-blue" id="btnCase">
+                    <el-select v-model="value" placeholder="请选择用例文件">
+                        {% verbatim %}
+                        <el-option v-for="(casefile,index) in casefilesList" :value="casefile" :key="index"></el-option>
+                        {% endverbatim %}
+                    </el-select>
+                    <el-button type="success" @click="checkCasefile">进入用例检测</el-button>
+                </div>
+            </form>
+        </div>
+    {% endblock %}
+</body>
+<script>
+    import {axios} from "../../../static/axios";
+    {% block js %}
+        {{ block.super }}
+        const vm = new Vue({
+            el:'#app',
+            data:{
+                casefilesList:[],
+                value: null,
+            },
+            created(){
+                let that = this;
+                axios.get("{% url 'casefilereturn' %}").then(res=>{
+                    that.casefilesList = res.data.casefiles;
+                    console.log(res.data.casefiles);
+                }).catch(e=>{
+                    console.log(e)
+                });
+            },
+            methods:{
+                checkCasefile(){
+                    axios.post("{% url 'gtcaseCheck' %}",{'casefile':this.value}).then(res=>{
+                        console.log('发送成功');
+                        window.location.href = "{% url 'casecheckpage' %}"
+                    })
+                }
+            }
+        });
+    {% endblock %}
+</script>
+<style>
+</style>
+</html>
