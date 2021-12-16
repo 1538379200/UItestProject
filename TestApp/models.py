@@ -15,3 +15,12 @@ class case_file(models.Model):
     def __str__(self):
         return self.title
 
+class report(models.Model):
+    report = models.CharField(max_length=200,verbose_name='报告名')
+    userid = models.ForeignKey(to='auth.User',on_delete=models.CASCADE)
+    class Meta():
+        db_table = 'report'
+        verbose_name = '生成的报告文件'
+        verbose_name_plural = verbose_name
+    def __str__(self):
+        return self.report

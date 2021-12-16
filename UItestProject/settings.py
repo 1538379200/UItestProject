@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 '''
 BASE_DIR 是整个项目的路径
@@ -62,7 +61,7 @@ ROOT_URLCONF = 'UItestProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR/'TestApp'/'templates'),str(BASE_DIR/'TestApp'/'RunTest'/'RunedFiles'/'RunningReport'/'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,11 +130,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),  #此处说明static是和manage.py是同级目录，将地址直接拼接
 ]
-print(os.path.join(BASE_DIR,'static'))
+print(STATICFILES_DIRS)
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

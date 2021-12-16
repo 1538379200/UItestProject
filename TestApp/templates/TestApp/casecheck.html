@@ -190,15 +190,34 @@
 
                         }else {
                             this.formStyle = 'padding-top: 10%;line-height: 50px;display: none';
-                            this.btnSet = 'border-radius: 5px;'
+                            this.btnSet = 'border-radius: 5px;display: none'
                         }
                     });
                 },
                 GoTest(){
                     var file = this.value;
-                    window.location.href = "/runtest/"+file
+                    window.sessionStorage.setItem('filename',file);
+                    window.open("{% url 'loading' %}");
+
                 },
             },
+            watch:{
+                immediate:true,
+                Ecaseinfo(newvalue,oldvalue){
+                    console.log(newvalue,oldvalue)
+                    if (this.Ecaseinfo.length!==0){
+                        this.btnSet = 'border-radius: 5px;display: none'
+                    }else if (this.Ecaseinfo.length===0&&this.Scaseinfo.length!==0){
+                        this.btnSet = 'border-radius: 5px;'
+                    }else if (this.Ecaseinfo.length===0&&this.Scaseinfo.length===0){
+                        this.formStyle = 'padding-top: 10%;line-height: 50px;display: block';
+                        this.btnSet = 'border-radius: 5px;display: none'
+                        alert('用例文件为空，请重新上传用例文件')
+                    }else {
+                        this.btnSet = 'border-radius: 5px;display: none'
+                    }
+                }
+            }
         });
     {% endblock %}
 </script>

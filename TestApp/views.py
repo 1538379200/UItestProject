@@ -59,7 +59,7 @@ def loginUser(request):
         print('进入登录')
         login(request,user)
         Logger.success('***用户',username,'登录***')
-        request.session['username']=username    #获取request的session，传递给此用户名
+        request.session['username']=username    #将用户名传入session中
         request.session.set_expiry(0)    #设置关闭session在关闭浏览器之后
         return JsonResponse({'st':0,'ms':'登录成功,点击确定跳转首页'})
     else:
@@ -124,7 +124,7 @@ def deleta_data(request):
 #定义下载model测试模板的方法
 def download_model(request):
     father_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(father_dir,'case_model','2.xlsx')
+    file_path = os.path.join(father_dir,'case_model','TestModel.xlsx')
     def send_file(file,chunk_size=512):
         with open(file_path,'rb') as f:
             while True:
@@ -135,10 +135,11 @@ def download_model(request):
                     break
     response = StreamingHttpResponse(send_file(file_path))
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachement;filename={}'.format('2.xlsx')
+    response['Content-Disposition'] = 'attachement;filename={}'.format('TestModel.xlsx')
     return response
 
 #我的用例界面及操作
+@login_required(login_url='/loginpage')
 def testcasePage(request):
     return render(request,'TestApp/myTastCase.html')
 
@@ -166,6 +167,7 @@ def myTestCase(request):
         send_files = {"code":0,"msg":"","count":files.count(),"data":files_info}
         return JsonResponse(send_files)
 #检查用例的界面
+@login_required(login_url='/loginpage')
 def casecheck_page(request):
     return render(request,'TestApp/casecheck.html')
 
@@ -178,3 +180,8 @@ def return_casefiles(request):
     for file in case_files:
         casefiles_list.append(file.title)
     return JsonResponse({'casefiles':casefiles_list})
+
+#等待loading界面
+@login_required(login_url='/loginpage')
+def loading(request):
+    return render(request,'TestApp/LoadingPage.html')

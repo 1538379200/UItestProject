@@ -9,12 +9,6 @@
         <script type="text/css" src={% static 'vue.js' %}></script>
         <link rel="stylesheet" href={% static 'css/uploadstyle.css' %}>
         <link rel="stylesheet" href={% static 'css/layui.css' %}>
-        <style>
-            {#.layui-anim {animation-duration: 1s}#}
-            body{
-                background-color: #eeeeee;
-            }
-        </style>
     {% endblock %}
 </head>
 <body>
@@ -127,7 +121,7 @@
                         $('#upload').attr('style','animation-direction: reverse');
                         $('#upload').addClass('layui-anim layui-anim-down');
                         setTimeout(function () {
-                            self.location="{% url 'uitest' %}";
+                            self.location="{% url 'casecheckpage' %}";
                         },200);
                         }else {
                             layer.alert('没有文件需要删除');
