@@ -6,12 +6,10 @@
     <title>LODING</title>
     <script type="text/javascript" src={% static 'vue.js' %}></script>
     <script type="text/javascript" src={% static 'axios.js' %}></script>
-    <script type="text/javascript" src={% static 'layui.js' %}></script>
-    <link rel="stylesheet" href={% static 'css/layui.css' %}>
 </head>
 <body>
 <h1>虚佬温馨提示：正在测试中……</h1>
-<div id="app">
+<div>
 	<?xml version="1.0" standalone="no"?>
 	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="4.25 16.279 175.302 194.531" width="176" height="250">
 		<g>
@@ -78,7 +76,6 @@
 			</g>
 		</g>
 	</svg>
-    <button class="layui-btn layui-btn-warm layui-btn-fluid" style="border-radius: 5px;" :style="displayBtn" @click="goReport">查看报告</button>
 </div>
 </body>
 <style>
@@ -343,28 +340,11 @@ div{
 </style>
 <script>
     const vm = new Vue({
-        el:'#app',
-        data:{
-            displayBtn: 'display: none',
-        },
         created(){
             var file=window.sessionStorage.getItem('filename')
             axios.post("{% url 'runTest' %}",{'file':file}).then(res=>{
                 console.log('成功传去file文件',file)
-                if (res.data.stu === 1){
-                    this.displayBtn = 'display: block'
-                    console.log(res.data.usersid)
-                }else if (res.data.stu === 2){
-                    alert(res.data.mes)
-                }else {
-                    alert(res.data.mes)
-                }
-            });
-        },
-        methods:{
-            goReport(){
-
-            }
+            })
         }
     })
 </script>

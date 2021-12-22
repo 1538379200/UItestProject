@@ -197,7 +197,7 @@
                 GoTest(){
                     var file = this.value;
                     window.sessionStorage.setItem('filename',file);
-                    window.open("{% url 'loading' %}");
+                    window.location.href = "{% url 'loading' %}";
 
                 },
             },
