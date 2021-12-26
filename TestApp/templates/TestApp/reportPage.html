@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    {% block title %}
+        <title>测试报告</title>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    {{ block.super }}
+    <div id="app">
+        <div class="layui-fluid" style="background-color: #393D49;border-radius: 0 0 50px 50px;margin: 0 3px 0 3px">
+            <div class="layui-row">
+                <div class="layui-col-md5">
+{#                    <div id="echartsPie" style="width: 500px;height: 500px;margin: auto"></div>#}
+                    <div id="echartsGu" style="width: 500px;height: 500px; margin: auto"></div>
+                </div>
+                <div class="layui-col-md-offset2 layui-col-md5" style="text-align: center">
+{#                    <h3 style="font-weight: bold">测试通过率</h3>#}
+{#                    <div id="echartsGu" style="width: 500px;height: 500px; margin: auto"></div>#}
+                    <div id="echartsPie" style="width: 500px;height: 500px;margin: auto"></div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;padding: 1px 20px 0 20px" :style="animDelay" :class="animDelayClass">
+            <div style="background-color: #393D49;border-radius: 5px;">
+                {% verbatim %}
+                <h1 style="color: #ffffff">{{ systemName }}</h1>
+                <button class="layui-btn layui-btn-sm layui-btn-radius" @click="showfail" style="background-color: #ee6666;color: #ffffff;font-weight: bold">仅显示失败用例</button>
+                <button class="layui-btn layui-btn-sm layui-btn-radius" @click="showall" style="background-color: #91cc75;color: #ffffff;font-weight: bold">显示所有用例</button>
+            </div>
+            <table class="layui-table">
+                <tr style="font-weight: bold">
+                    <td>模块名称</td>
+                    <td>用例名称</td>
+                    <td>运行结果</td>
+                    <td>运行时间(/秒)</td>
+                </tr>
+                <tr :style="item[4]" v-for="item in allcase" style="font-weight: bold">
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                </tr>
+                {% endverbatim %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+</body>
+<script>
+    {% block js %}
+        {{ block.super }}
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                passNum:null,
+                failNum:null,
+                caseList:null,
+                allcase:null,
+                passingRate:null,
+                animDelay:'display: none',
+                animDelayClass:'',
+                systemName:''
+            },
+            methods:{
+                showfail(){
+                    this.allcase = this.failNum
+                },
+                showall(){
+                    this.allcase = this.caseList
+                }
+            },
+            created(){
+                const filename = window.sessionStorage.getItem('filename')
+                console.log(filename)
+                axios.post("{% url 'api-report' %}",{'filename':filename}).then(res=>{
+                    console.log(res.data);
+                    if (res.data.stu === 1){
+                        this.passNum = res.data.passedNum;
+                        this.failNum = res.data.failedNum;
+                        this.caseList = res.data.allcaseList;
+                        this.passingRate = res.data.passRate;
+                        this.systemName = res.data.mysystemName;
+                        this.allcase = res.data.allcaseList;
+                    }else {
+                        alert(res.data.mes)
+                    }
+                }).catch(e=>{
+                    console.log(e)
+                })
+            },
+            beforeUpdate() {
+                var that = this
+                const echartsPie = echarts.init(document.getElementById('echartsPie'))
+                const echartsGu = echarts.init(document.getElementById('echartsGu'))
+                const optionPie = {
+                    title: {
+                        text: '测试用例运行结果',
+                        subtext: '测码自动化',
+                        left: 'center',
+                        textStyle: {
+                            color:'#ffffff'
+                        },
+                        subtextStyle:{
+                            color:'#ffffff'
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        textStyle:{
+                            color:'#ffffff'
+                        }
+                    },
+                    series: [
+                        {   color:['#91cc75','#ee6666'],
+                            name: 'ui测试',
+                            type: 'pie',
+                            radius: '50%',
+                            data: [
+                                {value: Number((that.passNum).length), name: '通过用例'},
+                                {value: Number((that.failNum).length), name: '失败用例'},
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                echartsPie.setOption(optionPie);
+                const optionGu = {
+                    title:{
+                        text: '用例通过率',
+                        left: 'center',
+                        textStyle:{
+                            color:'#ffffff'
+                        },
+                    },
+                    series: [
+                        {
+                            type: 'gauge',
+                            progress: {
+                                show: true,
+                                width: 18
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    width: 18
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            splitLine: {
+                                length: 15,
+                                lineStyle: {
+                                    width: 2,
+                                    color: '#999'
+                                }
+                            },
+                            axisLabel: {
+                                distance: 25,
+                                color: '#999',
+                                fontSize: 20
+                            },
+                            anchor: {
+                                show: true,
+                                showAbove: true,
+                                size: 25,
+                                itemStyle: {
+                                    borderWidth: 10
+                                }
+                            },
+                            title: {
+                                show: false
+                            },
+                            detail: {
+                                valueAnimation: true,
+                                fontSize: 70,
+                                offsetCenter: [0, '70%'],
+                                textStyle:{
+                                    color:'#ffffff'
+                                }
+                            },
+                            data: [
+                                {
+                                    value: Number(that.passingRate),
+                                }
+                            ]
+                        }
+                    ]
+                };
+                echartsGu.setOption(optionGu);
+                const timer = setTimeout(()=>{
+                    this.animDelay = 'display: block';
+                    this.animDelayClass = 'layui-anim layui-anim-up';
+                },1000)
+            }
+        })
+    {% endblock %}
+</script>
+<style>
+    html,body{
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    body{
+        display: flex;
+        flex-direction: column;
+    }
+    #app {
+        flex: 1 0 auto;
+    }
+    .layui-row{
+        text-align: center;
+    }
+
+</style>
+</html>

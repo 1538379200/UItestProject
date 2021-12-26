@@ -9,7 +9,8 @@
 </head>
 <body>
 <h1>虚佬温馨提示：正在测试中……</h1>
-<div>
+<h2>请不要刷新页面，页面刷新会重新执行，用例执行完成会在虚竹老师脚下生成查看报告按钮哦</h2>
+<div id="app">
 	<?xml version="1.0" standalone="no"?>
 	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="4.25 16.279 175.302 194.531" width="176" height="250">
 		<g>
@@ -76,6 +77,7 @@
 			</g>
 		</g>
 	</svg>
+    <button @click="goreport" style="background-color: orange;width: 200px;height: 50px;margin: auto;border-radius: 10px" :style="btnShow">查看报告</button>
 </div>
 </body>
 <style>
@@ -95,6 +97,12 @@ h1{
   letter-spacing:1px;
   margin:.2rem;
   font-size:2.5rem;
+}
+h2{
+    font-family: 'Bowlby One SC', cursive;
+    text-align: center;
+    color: #ffdc00;
+    margin:.2rem;
 }
 
 div{
@@ -340,11 +348,28 @@ div{
 </style>
 <script>
     const vm = new Vue({
+        el:'#app',
+        data:{
+          btnShow:'display: none;',
+        },
         created(){
             var file=window.sessionStorage.getItem('filename')
             axios.post("{% url 'runTest' %}",{'file':file}).then(res=>{
                 console.log('成功传去file文件',file)
+                if (res.data.stu === 1){
+                    this.btnShow = 'display: block;'
+                }else if (res.data.stu === 2){
+                    alert(res.data.mes)
+                }else if (res.data.stu === 3){
+                    alert(res.data.mes)
+                }
             })
+        },
+        methods:{
+            goreport(){
+                window.open("{% url 'reportpage' %}")
+                window.history.back()
+            }
         }
     })
 </script>

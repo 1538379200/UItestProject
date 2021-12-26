@@ -124,7 +124,7 @@ def deleta_data(request):
 #定义下载model测试模板的方法
 def download_model(request):
     father_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(father_dir,'case_model','2.xlsx')
+    file_path = os.path.join(father_dir,'case_model','TestModel.xlsx')
     def send_file(file,chunk_size=512):
         with open(file_path,'rb') as f:
             while True:
@@ -135,7 +135,7 @@ def download_model(request):
                     break
     response = StreamingHttpResponse(send_file(file_path))
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachement;filename={}'.format('2.xlsx')
+    response['Content-Disposition'] = 'attachement;filename={}'.format('TestModel.xlsx')
     return response
 
 #我的用例界面及操作
@@ -182,3 +182,13 @@ def return_casefiles(request):
 #等待loading界面
 def loading(request):
     return render(request,'TestApp/LoadingPage.html')
+
+#定义报告查看页面
+@login_required(login_url='/loginpage')
+def reportPage(request):
+    return render(request,'TestApp/reportPage.html')
+
+#定义我的报告页面
+@login_required(login_url='/loginpage')
+def myreport(request):
+    return render(request,'TestApp/myreport.html')

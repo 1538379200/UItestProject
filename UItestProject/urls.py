@@ -41,7 +41,11 @@ urlpatterns = [
     path('casecheckpage',views.casecheck_page,name='casecheckpage'), #用例检查页面
     path('setcaseapi',modelCheck.case_set,name='caseset'),
     path('runtest',testcaserun.runTest,name='runTest'), #定义进行测试的方法api
-    path('LOADING',views.loading,name='loading') #定义的loading界面
+    path('LOADING',views.loading,name='loading'), #定义的loading界面
+    path('testreport',views.reportPage,name='reportpage'),
+    path('reportAPI',testcaserun.push_report,name='api-report'), #定义获取报告数据的接口
+    path('myreport',views.myreport,name='myreport'),   #我的报告显示的页面
+    path('myreportAPI',testcaserun.myreportApi,name='myreportAPI')    #定义获取我的报告的接口
     # #测试接口
     # path('test',testview.test,name='test1'),
     # path('test2/<file>',testview.test2,name='test2'),

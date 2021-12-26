@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% extends 'TestApp/model/base.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>我的报告</title>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    {{ block.super }}
+    <div id="app" style="padding: 0 10px 0 10px" class="layui-anim layui-anim-up">
+        <div style="background-color: #393D49;border-radius: 5px;color: #ffffff;text-align: center">
+            <h1>我的报告</h1>
+        </div>
+        {% verbatim %}
+        <table class="layui-table" style="text-align: center">
+            <tr>
+                <td>报告文件</td>
+                <td>相关用例文件</td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="item in myreportList">
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td><button class="layui-btn" @click="openReport(item)">查看报告</button></td>
+            </tr>
+        </table>
+        {% endverbatim %}
+    </div>
+{% endblock %}
+</body>
+<script>
+    import {axios} from "../../../static/axios";
+    {% block js %}
+        {{ block.super }}
+        const vm = new Vue({
+            el:'#app',
+            data:{
+                myreportList:null,
+            },
+            created(){
+              axios.get("{% url 'myreportAPI' %}").then(res=>{
+                  if (res.data.stu === 1){
+                      this.myreportList = res.data.reportList;
+                  }else {
+                      alert(res.data.mes)
+                  }
+              })
+            },
+            methods:{
+                openReport(item){
+                    console.log(item[1])
+                    window.sessionStorage.setItem('filename',item[1])
+                    window.location.href = "{% url 'reportpage' %}"
+                },
+            },
+        })
+    {% endblock %}
+</script>
+</html>

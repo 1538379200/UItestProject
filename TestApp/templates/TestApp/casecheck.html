@@ -47,7 +47,7 @@
 {#        <button @click="check">点击开始检查</button>#}
         <div id="wa">
             <div class="layui-col-md6">
-                <h1 class="layui-bg-green" style="text-align: center;border: 1px solid green;border-radius: 5px">通过</h1>
+                <h1  style="text-align: center;border: 1px solid green;border-radius: 5px;background-color: #91cc75;color: #ffffff">通过</h1>
                 <table class="layui-table">
                     <tr style="font-weight: bold">
                         <td>用例ID</td>
@@ -68,7 +68,7 @@
                 </table>
             </div>
             <div class="layui-col-md6">
-                <h1 class="layui-bg-red" style="text-align: center;border: 1px solid #FF5722;border-radius: 5px">未通过</h1>
+                <h1  style="text-align: center;border: 1px solid #FF5722;border-radius: 5px;background-color: #ee6666;color: #ffffff">未通过</h1>
                 <table class="layui-table">
                     <tr style="font-weight: bold">
                         <td>用例ID</td>
@@ -101,19 +101,19 @@
             {% endverbatim %}
             <form class="layui-form layui-row layui-anim layui-anim-up" :style="formStyle">
                 {% csrf_token %}
-                <div class="layui-form-item layui-col-md5 layui-col-md-offset5 layui-bg-blue" id="btnCase">
+                <div class="layui-form-item layui-col-md5 layui-col-md-offset5" id="btnCase" style="background-color: #393D49">
                     <el-select v-model="value" placeholder="请选择用例文件">
                         {% verbatim %}
                         <el-option v-for="(casefile,index) in casefilesList" :value="casefile" :key="index"></el-option>
                         {% endverbatim %}
                     </el-select>
-                    <el-button type="success" @click="checkCasefile">进入用例检测</el-button>
+                    <el-button @click="checkCasefile" style="background-color: #91cc75;color: #ffffff">进入用例检测</el-button>
                 </div>
             </form>
         </div>
         <div id="foot">
             <div class="layui-col-md12">
-                <button class="layui-col-md12 layui-btn layui-btn-fluid" :style="btnSet" @click="GoTest">提交测试</button>
+                <button class="layui-col-md12 layui-btn layui-btn-fluid" :style="btnSet" @click="GoTest" style="background-color: #393D49">提交测试</button>
             </div>
         </div>
     </div>
@@ -197,7 +197,7 @@
                 GoTest(){
                     var file = this.value;
                     window.sessionStorage.setItem('filename',file);
-                    window.location.href = "{% url 'loading' %}";
+                    window.location.href = "{% url 'loading' %}"
 
                 },
             },
